@@ -11,7 +11,8 @@ interface SignInProps {
   onSignIn: (isAdmin: boolean) => void;
 }
 
-const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_EMAIL = "anjaliharish2004@gmail.com";
+const ADMIN_PASS= "admin@123";
 const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -24,7 +25,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
     e.preventDefault();
     setError("");
 
-    if (email === ADMIN_EMAIL) {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
       onSignIn(true);
       toast.success("Welcome, Admin!", {
         position: "top-center",
