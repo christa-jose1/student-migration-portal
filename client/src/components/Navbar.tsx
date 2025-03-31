@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { GraduationCap, Users, HelpCircle, Home as HomeIcon, LogOut, User as UserIcon} from 'lucide-react';
+import { GraduationCap, Users, HelpCircle, Home as HomeIcon, LogOut, User as UserIcon } from 'lucide-react';
+import { Article } from '@mui/icons-material';
 
 interface User {
   name: string;
@@ -29,11 +30,10 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, onClick }) => 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-all duration-300 ${
-        isActive
-          ? 'text-blue-400 bg-blue-900/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-          : 'text-gray-400 hover:text-blue-400 hover:bg-blue-900/20'
-      }`}
+      className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-all duration-300 ${isActive
+        ? 'text-blue-400 bg-blue-900/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+        : 'text-gray-400 hover:text-blue-400 hover:bg-blue-900/20'
+        }`}
     >
       {icon}
       <span>{label}</span>
@@ -46,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onLogout,
   isAdmin,
-  user 
+  user
 }) => {
   const [showProfile, setShowProfile] = useState(false);
 
@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({
     setShowProfile(!showProfile);
   };
 
-  if (isAdmin) return null; 
+  if (isAdmin) return null;
 
   return (
     <nav className="relative z-[999999] border-b border-blue-900/30 backdrop-blur-sm">
@@ -88,7 +88,12 @@ const Navbar: React.FC<NavbarProps> = ({
               isActive={activeTab === 'faq'}
               onClick={() => setActiveTab('faq')}
             />
-
+            <NavItem
+              icon={<Article className="w-5 h-5" />}
+              label="Posts"
+              isActive={activeTab === "post"}
+              onClick={() => setActiveTab("post")}
+            />
             <button
               onClick={toggleProfile}
               className="relative flex items-center space-x-2 px-4 py-2 rounded-md bg-black text-blue-400 font-semibold text-lg bg-clip-text shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all duration-300 bg-gradient-to-r from-purple-400 to-pink-400 hover:shadow-[0_0_25px_rgba(255,255,255,0.5)]"

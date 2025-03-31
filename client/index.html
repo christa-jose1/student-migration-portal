@@ -4,10 +4,95 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>BRAINBRIDG | Study Abroad Made Simple</title>
+    <meta
+      name="description"
+      content="Explore global education opportunities with BRAINBRIDG. Your guide to studying abroad in the USA, UK, Canada, Australia, Germany, and more!"
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:title" content="BRAINBRIDG" />
+    <meta
+      property="og:description"
+      content="Your global education journey starts here."
+    />
+    <meta property="og:image" content="/your-preview-image.jpg" />
+    <meta property="og:type" content="website" />
+
+    <style>
+      @font-face {
+        font-family: 'BrainBridg';
+        src: url('/fonts/BrainBridg.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: #0f172a;
+        color: #fff;
+      }
+      .chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        background-color: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 14px 18px;
+        border-radius: 9999px;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+      }
+
+      .chatbot-button:hover {
+        background-color: #1e40af;
+      }
+      .chatbot-container {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        z-index: 9999;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        display: none;
+      }
+
+      .chatbot-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
+    <div class="chatbot-container" id="chatbotContainer">
+      <iframe
+        class="chatbot-iframe"
+        src="https://www.chatbase.co/chatbot-iframe/jYm4UtMyJD0sj5k8HsWJf"
+        title="BrainBridg Chatbot"
+        allow="microphone; autoplay"
+      ></iframe>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      const chatbotContainer = document.getElementById('chatbotContainer');
+
+      function toggleChatbot() {
+        if (chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '') {
+          chatbotContainer.style.display = 'block';
+        } else {
+          chatbotContainer.style.display = 'none';
+        }
+      }
+    </script>
   </body>
 </html>

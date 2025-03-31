@@ -1,5 +1,6 @@
-import express from 'express';
-import Post from '../models/Post';
+const express = require('express');
+const Post = require('../models/Post');
+
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
   try {
     const { userId, title, category, content } = req.body;
-    const newPost = new Post({ userId, title, category, content, likes: [], comments: [], bookmarks: [] });
+    const newPost = new Post({ userId, title, category, content });
     await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
@@ -24,5 +25,4 @@ router.get('/posts', async (req, res) => {
     res.status(500).json({ message: 'Error fetching posts', error });
   }
 });
-
-export default router;
+module.exports = router;

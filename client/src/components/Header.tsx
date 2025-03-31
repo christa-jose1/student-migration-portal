@@ -1,6 +1,6 @@
 import React from 'react';
 import { Moon, Sun, Trash2 } from 'lucide-react';
-import { useChatStore } from './chatstore';
+//import { useChatStore } from './chatstore';
 
 export const Header: React.FC = () => {
   const { clearMessages, isDarkMode, toggleDarkMode } = useChatStore();

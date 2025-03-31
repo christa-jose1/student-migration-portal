@@ -2,12 +2,20 @@ import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
 import { GraduationCap, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { auth, createUserDocument } from "../backend/firebase";
-import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+} from "firebase/auth";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
-const SignUp: React.FC = () => {
+interface SignUpProps {
+  onSignUp: (mongoId: string) => void;
+}
+
+const SignUp: React.FC<SignUpProps> = ({ onSignUp }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,16 +25,6 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Store user in MongoDB
-  const registerUserInDB = async (uid: string, fullName: string, email: string) => {
-    try {
-      await axios.post("http://localhost:5000/api/auth/signup", { uid, fullName, email });
-      console.log("User stored in MongoDB");
-    } catch (err: any) {
-      console.error("MongoDB Registration Error:", err.message);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +50,11 @@ const SignUp: React.FC = () => {
 
     try {
       // Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       console.log("User Registered Successfully in Firebase");
 
@@ -62,8 +64,19 @@ const SignUp: React.FC = () => {
       // Store user in Firestore
       await createUserDocument(user, { fullName, email });
 
-      // Store user in MongoDB
-      await registerUserInDB(user.uid, fullName, email);
+      // Store user in MongoDB and get _id
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/signup",
+        {
+          uid: user.uid,
+          fullName,
+          email,
+        }
+      );
+      const mongoId = response.data._id;
+
+      // Pass MongoDB _id to parent component
+      onSignUp(mongoId);
 
       // Show success message
       toast.success("✅ Account created! Please verify your email.", {
@@ -75,9 +88,9 @@ const SignUp: React.FC = () => {
       // Logout user so they must verify before login
       await signOut(auth);
 
-      // Redirect to email verification page
+      // Redirect to sign-in page
       setTimeout(() => {
-        navigate("/verify-email");
+        navigate("/signin");
       }, 3100);
     } catch (err: any) {
       setError(err.message);
@@ -107,7 +120,9 @@ const SignUp: React.FC = () => {
         </div>
 
         <div className="backdrop-blur-xl bg-black/30 rounded-2xl border border-white/10 shadow-2xl p-8">
-          <h1 className="text-2xl font-bold text-white text-center mb-6">Create Account</h1>
+          <h1 className="text-2xl font-bold text-white text-center mb-6">
+            Create Account
+          </h1>
 
           {error && <p className="text-red-400 text-center mb-4">{error}</p>}
 
@@ -151,7 +166,11 @@ const SignUp: React.FC = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
 
@@ -170,7 +189,11 @@ const SignUp: React.FC = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
 
@@ -178,7 +201,9 @@ const SignUp: React.FC = () => {
               type="submit"
               disabled={isLoading}
               className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg py-3 font-medium ${
-                isLoading ? "opacity-50 cursor-not-allowed" : "hover:from-blue-600 hover:to-blue-700"
+                isLoading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:from-blue-600 hover:to-blue-700"
               }`}
             >
               {isLoading ? "Creating Account..." : "Create Account"}

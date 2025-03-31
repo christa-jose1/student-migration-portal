@@ -4,15 +4,14 @@ import { GraduationCap, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { auth } from "../backend/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast, ToastContainer, Bounce } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
-
 interface SignInProps {
-  onSignIn: (isAdmin: boolean) => void;
+  onSignIn: (email: string, isAdmin: boolean) => void;
 }
 
-const ADMIN_EMAIL = "anjaliharish2004@gmail.com";
-const ADMIN_PASS= "admin@123";
+const ADMIN_EMAIL = "cacfisat@gmail.com";
 const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -25,20 +24,13 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
     e.preventDefault();
     setError("");
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-      onSignIn(true);
-      toast.success("Welcome, Admin!", {
-        position: "top-center",
-        transition: Bounce,
-        autoClose: 3000,
-        theme: "dark"
-      });
-      navigate("/admin-dashboard");
-      return;
-    }
-
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       if (!user.emailVerified) {
@@ -46,28 +38,44 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
           position: "top-center",
           transition: Bounce,
           autoClose: 3000,
-          theme: "dark"
+          theme: "dark",
         });
         return;
       }
 
-      onSignIn(false);
-      toast.success("Sign in successful!", {
+      // Check if user exists in MongoDB
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/check-user",
+        {
+          uid: user.uid,
+        }
+      );
+
+      const mongoId = response.data._id;
+      sessionStorage.setItem("mongoId", mongoId);
+
+      // Check if admin
+      const isAdmin = email === ADMIN_EMAIL;
+      onSignIn(email, isAdmin);
+
+      toast.success(`Welcome, ${isAdmin ? "Admin" : "User"}!`, {
         position: "top-center",
         transition: Bounce,
         autoClose: 3000,
-        theme: "dark"
+        theme: "dark",
       });
-      navigate("/dashboard");
+
+      navigate(isAdmin ? "/admin-dashboard" : "/dashboard");
     } catch (err: any) {
-      console.error("Firebase SignIn Error:", err);
-      const errorMessage = err.message || "Something went wrong. Please try again.";
+      console.error("SignIn Error:", err);
+      const errorMessage =
+        err.response?.data?.error || err.message || "Something went wrong.";
       setError(errorMessage);
       toast.error(errorMessage, {
         position: "top-center",
         transition: Bounce,
         autoClose: 3000,
-        theme: "dark"
+        theme: "dark",
       });
     }
   };
@@ -88,7 +96,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
                   top: `${Math.random() * 100}%`,
                   left: `${Math.random() * 100}%`,
                   animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${5 + Math.random() * 5}s`
+                  animationDuration: `${5 + Math.random() * 5}s`,
                 }}
               ></div>
             ))}
@@ -102,11 +110,11 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
         </div>
 
         <div className="backdrop-blur-xl bg-black/30 rounded-2xl border border-white/10 shadow-2xl p-8">
-          <h1 className="text-2xl font-bold text-white text-center mb-6">Welcome Back</h1>
+          <h1 className="text-2xl font-bold text-white text-center mb-6">
+            Welcome Back
+          </h1>
 
-          {error && (
-            <p className="text-red-400 text-center mb-4">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-center mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative">
@@ -145,7 +153,11 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
 
@@ -170,7 +182,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
           </form>
 
           <p className="mt-6 text-center text-gray-400">
-            New to EduConnect?{" "}
+            New to BrainBridg?{" "}
             <Link
               to="/signup"
               className="text-blue-400 hover:text-blue-300 transition-colors"
@@ -195,4 +207,5 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
     </div>
   );
 };
+
 export default SignIn;

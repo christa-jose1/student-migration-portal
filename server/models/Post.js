@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema({
+const postsSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: String,
-  content: String,
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  category: {type:String, enum:["Accomadation","Education","Visa"]}, 
+  content: String
 }, { timestamps: true });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Posts", postsSchema);
