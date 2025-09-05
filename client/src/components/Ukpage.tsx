@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FiDownload, FiCheckCircle, FiStar, FiArrowLeft } from 'react-icons/fi';
+import { FiDownload, FiCheckCircle, FiStar, FiArrowLeft, FiX } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,6 +9,7 @@ const UKPage = () => {
   const navigate = useNavigate();
   const [subjects, setSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -29,30 +30,30 @@ const UKPage = () => {
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-  
+
       // Fetch the guide data
       const response = await axios.get("http://localhost:5000/api/guides/guides/GB");
-  
+
       if (!response.data || response.data.length === 0) {
         throw new Error("No guides found for this country.");
       }
-  
-      const guide = response.data[0]; 
+
+      const guide = response.data[0];
       let fileUrl = guide.fileUrl.startsWith("http") ? guide.fileUrl : `http://localhost:5000${guide.fileUrl}`;
-  
+
       console.log("Original File URL:", fileUrl);
-  
+
       // Encode the URL to handle special characters
       fileUrl = encodeURI(fileUrl);
       console.log("Encoded File URL:", fileUrl);
-  
+
       // Fetch file from the server
       const fileResponse = await fetch(fileUrl);
       if (!fileResponse.ok) throw new Error(`Failed to fetch file. Server responded with ${fileResponse.status}`);
-  
+
       const blob = await fileResponse.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
-  
+
       // Create and trigger a download
       const a = document.createElement("a");
       a.href = downloadUrl;
@@ -60,14 +61,14 @@ const UKPage = () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-  
+
       setIsDownloading(false);
     } catch (error) {
       console.error("Error downloading guide:", error);
       setIsDownloading(false);
     }
   };
-  
+
   const universities = [
     { name: 'University of Oxford', location: 'Oxford', ranking: '#1' },
     { name: 'University of Cambridge', location: 'Cambridge', ranking: '#2' },
@@ -118,6 +119,41 @@ const UKPage = () => {
   //   },
   // ];
 
+
+  const handleApply = async () => {
+    if (!selectedCourse) return;
+    
+    const userUid = sessionStorage.getItem("mongoId") || ""; // Replace with actual Firebase UID of the logged-in user
+  
+    const requestData = {
+      country: "UK",
+      course: selectedCourse.name,
+      universities: selectedCourse.universities, // This is an array
+    };
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/apply-course/${userUid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+  
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert("Course applied successfully!");
+        console.log("Updated User:", data.user);
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Failed to apply course:", error);
+    }
+  };
+  
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 to-purple-900/10 pointer-events-none" />
@@ -149,11 +185,10 @@ const UKPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleDownload}
-            className={`mt-8 px-8 py-3 rounded-lg font-semibold transition-all ${
-              isDownloading
+            className={`mt-8 px-8 py-3 rounded-lg font-semibold transition-all ${isDownloading
                 ? 'bg-blue-700 cursor-not-allowed'
                 : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-xl'
-            }`}
+              }`}
           >
             <div className="flex items-center gap-2">
               <FiDownload className="text-xl" />
@@ -267,7 +302,7 @@ const UKPage = () => {
                               <span>Duration: {course.duration}</span>
                               <span>Cost: {course.cost}</span>
                             </div>
-                            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg rounded-lg transition-all">
+                            <motion.button onClick={() => setSelectedCourse(course)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg rounded-lg transition-all">
                               Explore Programs
                             </motion.button>
                           </motion.div>
@@ -282,6 +317,27 @@ const UKPage = () => {
           </motion.section>
         </div>
       </div>
+      {selectedCourse && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="bg-gray-900 rounded-lg p-6 w-96 border border-gray-700 shadow-xl relative">
+            <button onClick={() => setSelectedCourse(null)} className="absolute top-2 right-2 text-gray-400 hover:text-white">
+              <FiX className="text-2xl" />
+            </button>
+            <h3 className="text-2xl font-bold text-white mb-3">{selectedCourse.name}</h3>
+            <p className="text-gray-300 mb-2"><strong>Duration:</strong> {selectedCourse.duration}</p>
+            <p className="text-gray-300 mb-2"><strong>Cost:</strong> {selectedCourse.cost}</p>
+            <h4 className="text-lg font-semibold text-purple-400 mt-4 mb-2">Offered By:</h4>
+            <ul className="list-disc pl-5 text-gray-300">
+              {selectedCourse.universities.map((uni) => (
+                <li key={uni}>{uni}</li>
+              ))}
+            </ul>
+            <motion.button onClick={handleApply} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mt-4 w-full py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg rounded-lg transition-all">
+              Apply Now
+            </motion.button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

@@ -153,12 +153,13 @@ const { Server } = require("socket.io");
 const bodyParser = require("body-parser");
 
 const authRoutes = require("./routes/auth");
-const postRoutes = require("./routes/Post");
+// const postRoutes = require("./routes/Post");
 const chatRoutes = require("./routes/chat");
 const userRoutes = require("./routes/user");
 const courseRoutes = require("./routes/course");
 const faqRoutes = require("./routes/faqRoutes");
 const guideRoutes = require("./routes/guideRoutes");
+const postRoutes = require("./routes/postRoutes");
 
 dotenv.config();
 
@@ -199,12 +200,13 @@ const io = new Server(server, {
 
 // ✅ API Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/posts", postRoutes);
+// app.use("/api/posts", postRoutes);
 app.use("/api/chat", chatRoutes(io));
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/guides", guideRoutes);
+app.use("/api/posts", postRoutes);
 
 // ✅ Socket.IO connection handling
 io.on("connection", (socket) => {

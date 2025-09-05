@@ -1,44 +1,61 @@
-import React from 'react';
+// File: src/components/StartPage.tsx
+
+import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+// Import Particles and the helper from tsParticles
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
+// If you want proper typing, install and import from "tsparticles-engine"
+import type { Engine } from 'tsparticles-engine';
 
 const StartPage: React.FC = () => {
-  const particlesInit = async (main: any) => {
-    await loadFull(main);
+  // State for chatbot toggle
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  // Toggle the chatbot’s visibility
+  const toggleChatbot = () => {
+    setShowChatbot((prev) => !prev);
   };
+
+  // Initialize tsParticles (avoid using `any`)
+  const particlesInit = useCallback(async (engine: Engine) => {
+    // This loads the "full" package of tsParticles (optional advanced usage)
+    await loadFull(engine);
+  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-hidden">
+      {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/bg.jpg')", 
+          backgroundImage: "url('/bg.jpg')",
         }}
       />
       <div className="absolute inset-0 bg-black/60" />
 
+      {/* Particles */}
       <Particles
         id="tsparticles"
-        init={particlesInit}
+        init={particlesInit} // Use our callback
         className="absolute inset-0 z-0"
         options={{
           fullScreen: false,
           background: { color: { value: 'transparent' } },
           fpsLimit: 60,
           interactivity: {
-            detectsOn: "canvas",
+            detectsOn: 'canvas',
             events: {
-              onHover: { enable: true, mode: "repulse" },
+              onHover: { enable: true, mode: 'repulse' },
               resize: true,
             },
           },
           particles: {
-            color: { value: "#ffffff" },
+            color: { value: '#ffffff' },
             links: {
-              color: "#ffffff",
+              color: '#ffffff',
               distance: 150,
               enable: true,
               opacity: 0.1,
@@ -46,9 +63,9 @@ const StartPage: React.FC = () => {
             },
             collisions: { enable: false },
             move: {
-              direction: "none",
+              direction: 'none',
               enable: true,
-              outModes: { default: "bounce" },
+              outModes: { default: 'bounce' },
               random: true,
               speed: 0.2,
               straight: false,
@@ -58,13 +75,14 @@ const StartPage: React.FC = () => {
               value: 30,
             },
             opacity: { value: 0.1 },
-            shape: { type: "circle" },
+            shape: { type: 'circle' },
             size: { value: { min: 1, max: 3 } },
           },
           detectRetina: true,
         }}
       />
 
+      {/* Main Content */}
       <div className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 text-white">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -72,12 +90,10 @@ const StartPage: React.FC = () => {
           transition={{ duration: 1 }}
           className="flex flex-col items-center text-center"
         >
-          <h1
-            className="text-5xl md:text-7xl font-extrabold mb-6 drop-shadow-2xl flex items-center justify-center font-gluon tracking-widest">
-            <span className="text-white">BRAIN</span>    
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 drop-shadow-2xl flex items-center justify-center font-gluon tracking-widest">
+            <span className="text-white">BRAIN</span>
             <span className="text-yellow-400">BRIDG</span>
           </h1>
-
 
           <motion.p
             initial={{ opacity: 0 }}
@@ -85,7 +101,8 @@ const StartPage: React.FC = () => {
             transition={{ delay: 0.5, duration: 1 }}
             className="text-xl md:text-2xl text-blue-100 mb-10 max-w-3xl"
           >
-            Your gateway to international education opportunities. Empower your journey with insights, support, and personalized guidance.
+            Your gateway to international education opportunities. Empower your
+            journey with insights, support, and personalized guidance.
           </motion.p>
 
           <motion.div
@@ -117,15 +134,71 @@ const StartPage: React.FC = () => {
         </motion.div>
       </div>
 
+      {/* Footer */}
       <footer className="relative z-10 py-6 text-blue-100 text-sm text-center">
         <p>© {new Date().getFullYear()} BRAINBRIDG. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-2">
-          <Link to="/about" className="hover:underline">About</Link>
-          <Link to="/privacy" className="hover:underline">Privacy</Link>
-          <Link to="/contact" className="hover:underline">Contact</Link>
+          <Link to="/about" className="hover:underline">
+            About
+          </Link>
+          <Link to="/privacy" className="hover:underline">
+            Privacy
+          </Link>
+          <Link to="/contact" className="hover:underline">
+            Contact
+          </Link>
         </div>
       </footer>
+
+      {/* Chatbot Trigger & Container (Only on StartPage) */}
+      <button
+        onClick={toggleChatbot}
+        className="chatbot-button"
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 9999,
+          backgroundColor: '#2563eb',
+          color: '#fff',
+          border: 'none',
+          padding: '14px 18px',
+          borderRadius: '9999px',
+          fontSize: '18px',
+          cursor: 'pointer',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.3)',
+          transition: 'background-color 0.3s',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1e40af')}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#2563eb')}
+      >
+        💬
+      </button>
+
+      {showChatbot && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '80px',
+            right: '20px',
+            width: '350px',
+            height: '500px',
+            zIndex: 9999,
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+            borderRadius: '10px',
+            overflow: 'hidden',
+          }}
+        >
+          <iframe
+            src="https://www.chatbase.co/chatbot-iframe/jYm4UtMyJD0sj5k8HsWJf"
+            title="BrainBridg Chatbot"
+            allow="microphone; autoplay"
+            style={{ width: '100%', height: '100%', border: 'none' }}
+          />
+        </div>
+      )}
     </div>
   );
 };
+
 export default StartPage;

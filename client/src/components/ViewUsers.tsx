@@ -4,7 +4,6 @@ import {
   Box,
   List,
   ListItem,
-  Button,
   Typography,
   CircularProgress,
   Paper,
@@ -58,12 +57,17 @@ const UsersPage: React.FC = () => {
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        height: "100vh",
-        backgroundColor: "#121212",
-      }}
-    >
+    sx={{
+      display: "flex",
+      height: "100vh",
+      borderColor: "blue.900",
+      borderWidth: "1px",
+      backdropFilter: "blur(8px)", // Equivalent to `backdrop-blur-sm`
+      borderRadius:"20px"
+
+    }}
+  >
+  
       {/* Sidebar */}
       <Paper
         elevation={3}
@@ -71,10 +75,9 @@ const UsersPage: React.FC = () => {
           width: "300px",
           height: "100%",
           overflowY: "auto",
-          backgroundColor: "#1e1e1e",
+          backgroundColor: "transparent",
           color: "white",
           padding: 2,
-          borderRadius:"20px"
         }}
       >
         <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
@@ -124,12 +127,14 @@ const UsersPage: React.FC = () => {
       <Box
         sx={{
           flexGrow: 1,
-          backgroundColor: "#222",
+          backgroundColor: "blue.900",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           color: "white",
-           borderRadius:"20px" 
+           borderRadius:"20px" ,
+           borderWidth: "1px",
+           backdropFilter: "blur(8px)", 
         }}
       >
         {selectedChatId ? (

@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 
-const Forum = () => {
+interface AddPostProps {
+  onPostCreated?: () => void;
+}
+
+const AddPost = ({ onPostCreated }: AddPostProps) => {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState<
-    "Accomadation" | "Education" | "Visa"
-  >("Education");
+  const [category, setCategory] = useState<"Accommodation" | "Education" | "Visa">("Education");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mongoUserId, setMongoUserId] = useState<string | null>(null);
 
-  const API_URL = "http://localhost:5000/api/Post/";
+  const API_URL = "http://localhost:5000/api/posts/";
 
   useEffect(() => {
     // Get userId from sessionStorage
@@ -30,17 +31,35 @@ const Forum = () => {
     setError("");
 
     try {
-      await axios.post(`${API_URL}create`, {
-        userId: mongoUserId,
-        title,
-        category,
-        content,
+      const response = await fetch(`${API_URL}create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: mongoUserId,
+          title,
+          category,
+          content,
+        }),
       });
-      setTitle("");
-      setCategory("Education");
-      setContent("");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Error creating post");
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Post created successfully:", data);
+        setTitle("");
+        setCategory("Education");
+        setContent("");
+        
+        // Call the callback if it exists
+        if (onPostCreated) {
+          onPostCreated();
+        }
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Error creating post");
+      }
+    } catch (err) {
+      setError("Error creating post. Please try again.");
+      console.error("Error creating post:", err);
     } finally {
       setLoading(false);
     }
@@ -53,7 +72,7 @@ const Forum = () => {
       {/* Post Form */}
       <form
         onSubmit={handleSubmitPost}
-        className="space-y-4 mb-8 bg-white p-6 rounded-lg shadow-md"
+        className="space-y-4 mb-8 bg-[#121a2a] p-6 rounded-lg border border-[#1a2642]"
       >
         <div>
           <input
@@ -61,7 +80,7 @@ const Forum = () => {
             placeholder="Post Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 bg-[#1e293b] text-gray-300 border border-[#2a3b52] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             required
             maxLength={100}
           />
@@ -69,15 +88,11 @@ const Forum = () => {
         <div>
           <select
             value={category}
-            onChange={(e) =>
-              setCategory(
-                e.target.value as "Accomadation" | "Education" | "Visa"
-              )
-            }
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setCategory(e.target.value as "Accommodation" | "Education" | "Visa")}
+            className="w-full p-3 bg-[#1e293b] text-gray-300 border border-[#2a3b52] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
             <option value="Education">Education</option>
-            <option value="Accomadation">Accommodation</option>
+            <option value="Accommodation">Accommodation</option>
             <option value="Visa">Visa</option>
           </select>
         </div>
@@ -86,13 +101,13 @@ const Forum = () => {
             placeholder="Write your post content..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full p-2 border rounded h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 bg-[#1e293b] text-gray-300 border border-[#2a3b52] rounded-lg h-32 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             required
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition-colors disabled:bg-blue-900 disabled:text-blue-300"
           disabled={loading}
         >
           {loading ? "Posting..." : "Create Post"}
@@ -103,4 +118,4 @@ const Forum = () => {
   );
 };
 
-export default Forum;
+export default AddPost;

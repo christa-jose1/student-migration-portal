@@ -7,6 +7,7 @@ import UniversitiesManagement from './UniversitiesManagement';
 import FAQManagement from './FAQManagement';
 import GuidesManagement from '../AdminDashboard/GuidesManagement';
 import Sidebar from './Sidebar';
+import Analytics from './Analytics';
 
 const AdminDashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState("userManagement");
@@ -31,6 +32,7 @@ const AdminDashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         {activeTab === "universities" && <UniversitiesManagement />}
         {activeTab === "faq" && <FAQManagement />}
         {activeTab === "guides" && <GuidesManagement />}
+        {activeTab === "analytics" && <Analytics />}
       </div>
     </div>
   );

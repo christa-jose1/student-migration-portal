@@ -22,6 +22,7 @@ import { onAuthStateChanged, User as FirebaseUser, createUserWithEmailAndPasswor
 import UsersPage from "./components/ViewUsers";
 import { doc, setDoc } from "firebase/firestore";
 import Post from "./components/Post";
+import Profile from "./components/Profile";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -237,6 +238,9 @@ const App: React.FC = () => {
         return <FAQ />;
       case "post":
           return <Post />;
+      case "profile":
+        return <Profile/>;
+
       default:
         return <HomePage />;
     }
@@ -272,6 +276,9 @@ const App: React.FC = () => {
     );
   };
 
+
+  console.log(user,"user>>>>>>>>>>>>");
+  
   return (
     <div>
       <NetworkAnimation />

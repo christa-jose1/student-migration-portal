@@ -67,51 +67,18 @@ const GermanyPage = () => {
     'Letter of Admission from University',
   ];
 
-  // const subjects = [
-  //   {
-  //     subject: 'Engineering & Technology',
-  //     courses: [
-  //       {
-  //         name: 'Mechanical Engineering',
-  //         duration: '3 years',
-  //         cost: '€0 - €3k/yr',
-  //         universities: ['Technical University of Munich', 'University of Heidelberg'],
-  //       },
-  //       {
-  //         name: 'Automotive Engineering',
-  //         duration: '4 years',
-  //         cost: '€0 - €4k/yr',
-  //         universities: ['Technical University of Munich', 'Ludwig Maximilian University of Munich'],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     subject: 'Business & Management',
-  //     courses: [
-  //       {
-  //         name: 'International Business',
-  //         duration: '3 years',
-  //         cost: '€1k - €3k/yr',
-  //         universities: ['Ludwig Maximilian University of Munich', 'University of Heidelberg'],
-  //       },
-  //       {
-  //         name: 'Economics',
-  //         duration: '3 years',
-  //         cost: '€0 - €3k/yr',
-  //         universities: ['Technical University of Munich', 'Ludwig Maximilian University of Munich'],
-  //       },
-  //     ],
-  //   },
-  // ];
+  
 
 
-    const [subjects, setSubjects] = useState([]);
+    const [subjects, setSubjects] = useState<{ subject: string; courses: { name: string; duration: string; cost: string; universities: string[] }[] }[]>([]);
   
     useEffect(() => {
       const fetchCourses = async () => {
         try {
           const response = await axios.get("http://localhost:5000/api/courses/courses");
-          const usData = response.data.find((item) => item.country === "GER");
+          type Subject = { subject: string; courses: { name: string; duration: string; cost: string; universities: string[] }[] };
+          type CourseData = { country: string; subjects: Subject[] }; // Define the structure of the data
+          const usData = response.data.find((item: CourseData) => item.country === "G");
           setSubjects(usData ? usData.subjects : []);
         } catch (error) {
           console.error("Error fetching courses:", error);
