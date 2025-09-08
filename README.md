@@ -70,7 +70,9 @@ cd ../client
 npm install
 
 4️⃣ Environment Configuration
+
 🔧 Server (.env) Configuration
+
 MongoDB URI → Your MongoDB Atlas connection string
 
 SMTP Settings → Gmail SMTP for email functionality
@@ -80,6 +82,7 @@ JWT Secret → Your secure JWT key
 Environment → Development/Production settings
 
 🔧 Client (.env) Configuration
+
 Firebase API Key → Your Firebase config
 
 Weather API Key → OpenWeatherMap API key
