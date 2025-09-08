@@ -52,20 +52,18 @@ _A comprehensive web application designed to assist students with migration and 
 
 
 1️⃣ Clone the Repository  
-bash
+
 git clone https://github.com/christa-jose1/student-migration-portal.git
 
 cd student-migration-portal
 
 2️⃣ Backend Setup
-bash
-Copy code
+
 cd server
 npm install
 
 3️⃣ Frontend Setup
-bash
-Copy code
+
 cd ../client
 npm install
 
