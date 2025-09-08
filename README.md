@@ -69,21 +69,15 @@ npm install
 
 4️⃣ Environment Configuration
 
-🔧 Server (.env) Configuration
+🔧 Server (.env)
 
-MongoDB URI → Your MongoDB Atlas connection string
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+SMTP_USER=your_email
+SMTP_PASS=your_password
 
-SMTP Settings → Gmail SMTP for email functionality
+🔧 Client .env
 
-JWT Secret → Your secure JWT key
-
-Environment → Development/Production settings
-
-🔧 Client (.env) Configuration
-
-Firebase API Key → Your Firebase config
-
-Weather API Key → OpenWeatherMap API key
-
-
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_WEATHER_API_KEY=your_weather_api_key
 
