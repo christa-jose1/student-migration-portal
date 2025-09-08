@@ -72,12 +72,16 @@ npm install
 🔧 Server.env
 
 MONGO_URI=your_mongodb_uri
+
 JWT_SECRET=your_jwt_secret
+
 SMTP_USER=your_email
+
 SMTP_PASS=your_password
 
 🔧 Client .env
 
 VITE_FIREBASE_API_KEY=your_firebase_api_key
+
 VITE_WEATHER_API_KEY=your_weather_api_key
 
