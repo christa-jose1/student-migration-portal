@@ -60,12 +60,18 @@ cd student-migration-portal
 2️⃣ Backend Setup
 
 cd server
+
 npm install
+
+npm run dev
 
 3️⃣ Frontend Setup
 
 cd ../client
+
 npm install
+
+npm run dev
 
 4️⃣ Environment Configuration
 
