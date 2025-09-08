@@ -1,7 +1,6 @@
 # 🌍 Student Migration Portal  
 
 _A comprehensive web application designed to assist students with migration and study abroad processes._  
-Featuring **dual-interface architecture**, **role-based access control**, **AI chatbot assistance**, and **comprehensive document management**.  
 
 ---
 
@@ -51,20 +50,25 @@ Featuring **dual-interface architecture**, **role-based access control**, **AI c
 
 ## ⚙️ Installation  
 
-### 1️⃣ Clone the Repository  
-```bash
+
+1️⃣ Clone the Repository  
+bash
 git clone https://github.com/christa-jose1/student-migration-portal.git
+
 cd student-migration-portal
+
 2️⃣ Backend Setup
 bash
 Copy code
 cd server
 npm install
+
 3️⃣ Frontend Setup
 bash
 Copy code
 cd ../client
 npm install
+
 4️⃣ Environment Configuration
 🔧 Server (.env) Configuration
 MongoDB URI → Your MongoDB Atlas connection string
