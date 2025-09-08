@@ -69,7 +69,7 @@ npm install
 
 4️⃣ Environment Configuration
 
-🔧 Server (.env)
+🔧 Server.env
 
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
