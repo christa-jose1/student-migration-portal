@@ -118,6 +118,8 @@ VITE_WEATHER_API_KEY=your_weather_api_key
 
 ![Home Page Extended](https://github.com/user-attachments/assets/5aca876c-a2f8-4010-8df8-041530f481cc  )
 ![](https://github.com/user-attachments/assets/2d1c0509-747d-47d0-95c8-8fc857ab9892)
+![Landing Page](https://github.com/user-attachments/assets/046e5795-07c8-4fac-911f-9ea866ba64d5)
+
 
 
 </details>
